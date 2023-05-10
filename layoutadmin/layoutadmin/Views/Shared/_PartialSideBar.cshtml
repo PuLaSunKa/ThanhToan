@@ -1,0 +1,87 @@
+﻿<!-- Sidebar -->
+<div class="sidebar">
+    <!-- Sidebar user (optional) -->
+    <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+        <div class="image">
+            <img src=" ~/Content/clients/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
+        </div>
+        <div class="info">
+            <a href="#" class="d-block">Alexander Pierce</a>
+        </div>
+    </div>
+
+    <!-- SidebarSearch Form -->
+    <!-- Sidebar Menu -->
+    <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+            <!-- Add icons to the links using the .nav-icon class
+            with font-awesome or any other icon font library -->
+            <li class="nav-item">
+                <a href="@Url.Action("Index","DanhMuc")" class="nav-link">
+                    <i class="nav-icon fa-solid fa-list"></i>
+                    <p>
+                        Danh Mục
+                    </p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("Index","DanhMucXetDuyet")" class="nav-link">
+                    <i class="nav-icon fa-solid fa-list"></i>
+                    <p>
+                        Danh Mục Xét Duyệt
+                    </p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("Index","ThanhToanGV")" class="nav-link">
+                    <i class="nav-icon fa-solid fa-list"></i>
+                    <p>
+                        Thanh Toán Giảng Viên
+                    </p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("Index","ThanhToanNCV")" class="nav-link">
+                    <i class="nav-icon fa-solid fa-list"></i>
+                    <p>
+                        Thanh Toán NCV
+                    </p>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a href="@Url.Action("Index","QuyDoiGV")" class="nav-link">
+                    <i class="nav-icon fa-solid fa-list"></i>
+                    <p>
+                        Quy Đổi Giảng Viên
+                    </p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("Index","QuyDoiNCV")" class="nav-link">
+                    <i class="nav-icon fa-solid fa-list"></i>
+                    <p>
+                        Quy Đổi NCV
+                    </p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="nav-icon fa-solid fa-sign-out"></i>
+                    <p>
+                        Đăng xuất
+                    </p>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <!-- /.sidebar-menu -->
+</div>
+<!-- /.sidebar -->
+@if (Request.IsAuthenticated)
+{
+    <div style="display:none">
+        @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { @id = "logOffForm" }))
+        {
+            @Html.AntiForgeryToken()}
+    </div>}

@@ -1,0 +1,281 @@
+﻿<style>
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+        .pagination button {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            color: #555;
+            padding: 8px 12px;
+            margin-right: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+            .pagination button.active {
+                background-color: #007bff;
+                border-color: #007bff;
+                color: #fff;
+            }
+
+            .pagination button:hover:not(.active) {
+                background-color: #f2f2f2;
+            }
+
+    #table-container {
+        height: 500px; /* đặt chiều cao cho thanh scroll */
+        overflow-y: scroll; /* chỉ định thanh scroll ở trục y */
+    }
+</style>
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Xét duyệt danh mục NCKH</h3>
+    </div>
+    <div class="card-body">
+        <input type="file" id="importFileInput" accept=".xlsx,.xls">
+        <button class="btn btn-sm btn-success" onclick="uploadExcel(event)">IMPORT EXCEL</button>
+        <button class="btn btn-success btn-sm" onclick="exportExcel()">EXPORT EXCEL</button>
+        <button class="btn btn-danger btn-sm" onclick="exportPdf()">EXPORT PDF</button>
+        <select id="mySelect">
+            <option value="all" selected>Tất cả</option>
+            <option value="Đang đợi duyệt">Đang đợi duyệt</option>
+            <option value="Duyệt lần 1">Duyệt lần 1</option>
+            <option value="Duyệt lần 2">Duyệt lần 2</option>
+            <option value="Từ chối">Từ chối</option>
+            <option value="Hoàn thành">Hoàn thành</option>
+        </select>
+    </div>
+    <!-- /.card-header -->
+    <div class="card-body">
+        <div id="table-container">
+            <table id="example1" class="table table-bordered table-striped">
+                <thead>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- /.card-body -->
+    <div id="pagination" class="pagination">
+    </div>
+</div>
+
+<script>
+
+    function getData() {
+        fetch('https://localhost:44364/api/DanhMucXetDuyet/Get-all-datatem')
+            .then(response => response.json())        
+            .then(data => {
+
+                var page_limit = 10;
+                renderTable(1, page_limit, data);
+                renderPagination(1, page_limit, data);
+                const tbody = document.querySelector('#example1 tbody');
+            })
+
+    }
+
+    getData();
+
+    function paginate(pageNumber, pageSize, data) {
+        var startIndex = (pageNumber - 1) * pageSize;
+        var endIndex = startIndex + pageSize;
+        var paginatedData = data.slice(startIndex, endIndex);
+        return paginatedData;
+    }
+
+    function renderTable(pageNumber, pageSize, data) {
+        var table = $("<table>");
+        table.append("<thead>< tr ><th> ID Danh Mục</th ><th>Loại Hình Tạp Chí</th><th>Issn</th><th>Eissn</th> <th>Category</th><th>Citations</th><th>if_2022</th><th>percentageOAGold</th><th>Họ Tên</th><th>Tên Bài Báo</th><th>groupUser</th><th>Rank</th><th>link</th><th>Trạng Thái</th><th>Cập nhật</th><th></th><th></th></thead > ");
+        var tbody = $("<tbody>");
+
+        var paginatedData = paginate(pageNumber, pageSize, data);
+
+        paginatedData.forEach(function (row) {
+            var tr = $("<tr>");
+            tr.append("<td>" + row.idDanhMuc + "</td>");
+            tr.append("<td>" + row.journal_name + "</td>");
+            tr.append("<td>" + row.issn + "</td>");
+            tr.append("<td>" + row.eissn + "</td>");
+            tr.append("<td>" + row.category + "</td>");
+            tr.append("<td>" + row.citations + "</td>");
+            tr.append("<td>" + row.if_2022 + "</td>");
+            tr.append("<td>" + row.percentageOAGold + "</td>");
+            tr.append("<td>" + row.userId + "</td>");
+            tr.append("<td>" + row.tenBaiBao + "</td>");
+            tr.append("<td>" + row.groupUser + "</td>");
+            tr.append("<td>" + row.rank + "</td>");
+            tr.append("<td>" + row.link + "</td>");
+
+            tr.append("<td><select onchange='changeStatus(" + row.idDanhMuc + ")' id='status" + row.idDanhMuc + "' >" +
+                "<option value='Đang đợi duyệt'" + (row.status == "Đang đợi duyệt" ? " selected" : "") + ">Đang đợi duyệt</option>" +
+                "<option value='Duyệt lần 1'" + (row.status == "Duyệt lần 1" ? " selected" : "") + ">Duyệt lần 1</option>" +
+                "<option value='Duyệt lần 2'" + (row.status == "Duyệt lần 2" ? " selected" : "") + ">Duyệt lần 2</option>" +
+                "<option value='Từ chối'" + (row.status == "Từ chối" ? " selected" : "") + ">Từ chối</option>" +
+                "<option value='Hoàn Thành'" + (row.status == "Hoàn Thành" ? " selected" : "") + ">Hoàn Thành</option>" +
+                "</select></td>");
+            tr.append(`<td><button class="btn btn-sm btn-block btn-success" onclick="location.href='/DanhMucXetDuyet/Edit?idDanhMuc=${row.idDanhMuc}'">EDIT</button></td>`);
+            tr.append(`<td><button class="btn btn-sm btn-block btn-danger" onclick="deleteItem(${row.idDanhMuc})">DELETE</button></td>`);
+            tbody.append(tr);
+        });
+        table.append(tbody);
+        $("#example1").empty();
+        $("#example1").append(table);
+    }
+
+    function renderPagination(pageNumber, pageSize, data) {
+        var totalPages = Math.ceil(data.length / pageSize);
+        var pagination = $("<div>");
+
+        if (totalPages <= 5) {
+
+            for (var i = 1; i <= totalPages; i++) {
+                var link = $("<button class='pagination-number'>" + i + "</button>");
+                if (i == pageNumber) {
+                    link.addClass("active");
+                }
+                pagination.append(link);
+            }
+        }
+        else {
+            var no1 = $("<button class='pagination-number'>" + 1 + "</button>");
+            if (pageNumber == 1) {
+                no1.addClass("active");
+            }
+            var no2 = $("<button class='pagination-number'>" + 2 + "</button>");
+            if (pageNumber == 2) {
+                no2.addClass("active");
+            }
+            pagination.append(no1);
+            pagination.append(no2);
+            pagination.append($('<span class="pagination-ellipsis">&hellip;</span>'));
+
+            for (var i = parseInt(pageNumber) - 1; i <= parseInt(pageNumber) + 1; i++) {
+                if (i > 2 && i < totalPages) {
+                    var link = $("<button class='pagination-number'>" + i + "</button>");
+                    if (i == pageNumber) {
+                        link.addClass("active");
+                    }
+                    pagination.append(link);
+                }
+            }
+            var noZ = $("<button class='pagination-number'>" + totalPages + "</button>");
+            if (pageNumber == totalPages) {
+                noZ.addClass("active");
+            }
+            pagination.append($('<span class="pagination-ellipsis">&hellip;</span>'));
+            pagination.append(noZ);
+        }
+        $("#pagination").empty();
+        $("#pagination").append(pagination);
+        $("#pagination button").click(function () {
+            var pageNumber = $(this).text();
+            renderTable(pageNumber, pageSize, data);
+            renderPagination(pageNumber, pageSize, data);
+        });
+    }
+
+    //Xóa
+    function deleteItem(idDanhMuc) {
+        if (confirm("Xác nhận xóa?")) {
+            fetch(`https://localhost:44364/api/DanhMucXetDuyet/Delete/${idDanhMuc}`, {
+                method: 'DELETE'
+            })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Xóa dữ liệu thành công!');
+                        window.location.href = '/XetDuyetDeTai/Index';
+                    } else {
+                        alert('Có lỗi xảy ra');
+                    }
+                });
+        }
+    }
+    function changeStatus(idDanhMuc) {
+        var status = document.getElementById('status' + idDanhMuc).value;
+        fetch(`https://localhost:44364/api/DanhMucXetDuyet/${idDanhMuc}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(status)
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Status updated successfully', data);
+                if (data) {
+                    alert('Đã đổi trạng thái thành công!');
+                }
+            })
+            .catch(error => {
+                console.error('Error while updating status', error);
+            });
+    }
+
+    function uploadExcel(event) {
+        event.preventDefault();
+        var input = document.querySelector('input[type="file"]');
+        if (!input.files[0]) {
+            alert("Vui lòng chọn file để tải lên");
+            return;
+        }
+        var formData = new FormData();
+        formData.append('formFile', input.files[0]);
+
+        fetch('https://localhost:44364/api/UploadExcelFile', {
+            method: 'POST',
+            body: formData
+        })
+            .then(res => {
+                if (res.ok) {
+                    alert("Đã nhập file excel thành công:");
+                    window.location.href = "/XetDuyetDeTai/Index";
+                }
+                else {
+                    alert("Lỗi import: chi tiết->console");
+                    console.log(res);
+                }
+            });
+    }
+
+    //Xuất file excel
+    function exportExcel() {
+        fetch('https://localhost:44364/api/DanhMucXetDuyet/Excel')
+            .then(response => response.blob())
+            .then(blob => {
+                const url = window.URL.createObjectURL(new Blob([blob]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'data.xlsx');
+                document.body.appendChild(link);
+                link.click();
+                link.parentNode.removeChild(link);
+            })
+    }
+
+    // Lấy dữ liệu theo selectbox
+
+    const mySelect = document.getElementById("mySelect");
+    mySelect.addEventListener("change", function () {
+        const selectedValue = mySelect.value;
+        if (selectedValue == 'all') {
+            getData();
+        }
+        else {
+            fetch("https://localhost:44364/api/DanhMucXetDuyet/Get-data?status=" + selectedValue)
+                .then(response => response.json())
+                .then(data => {
+                    var page_limit = 10;
+                    renderTable(1, page_limit, data);
+                    renderPagination(1, page_limit, data);
+                    const tbody = document.querySelector('#example1 tbody');
+                })
+        }
+    });
+</script>

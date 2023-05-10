@@ -1,0 +1,122 @@
+﻿@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    form {
+        width: 100%;
+        margin: 0 auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 5px #999;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 10px;
+        font-weight: bold;
+    }
+
+    input[type="text"],
+    input[type="number"] {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        box-sizing: border-box;
+    }
+
+    button {
+        background-color: #4CAF50;
+        color: #fff;
+        padding: 10px;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 16px;
+        margin-top: 20px;
+        width: 100%;
+    }
+
+        button:hover {
+            background-color: #3e8e41;
+        }
+</style>
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">SỬA THÔNG TIN</h3>
+    </div>
+    <!-- /.card-header -->
+    <div class="card-body">
+        <form>
+            <label for="loaiSanPham">Loại sản phẩm:</label>
+            <input type="text" id="loaiSanPham" name="loaiSanPham"><br>
+
+            <label for="moTaLoaiSanPham">Mô tả loại sản phẩm:</label>
+            <input type="text" id="moTaLoaiSanPham" name="moTaLoaiSanPham"><br>
+
+            <label for="yeuCauChatLuong">Yêu cầu chất lượng:</label>
+            <input type="text" id="yeuCauChatLuong" name="yeuCauChatLuong"><br>
+
+            <label for="kinhPhi">Kinh phí:</label>
+            <input type="text" id="kinhPhi" name="kinhPhi"><br>
+
+            <button type="button" onclick="updateThanhToanGV()">Cập nhật</button>
+        </form>
+    </div>
+    <!-- /.card-body -->
+    <div id="pagination" class="pagination">
+    </div>
+</div>
+
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const ID = urlParams.get('id');
+
+    fetch("https://localhost:44364/api/ThanhToanGV/Get-id?id=" + ID)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("loaiSanPham").value = data.loaiSanPham;
+            document.getElementById("yeuCauChatLuong").value = data.yeuCauChatLuong;
+            document.getElementById("kinhPhi").value = data.kinhPhi;
+            document.getElementById("moTaLoaiSanPham").value = data.moTaLoaiSanPham;
+        })
+
+    function updateThanhToanGV() {
+
+        const link = "https://localhost:44364/api/ThanhToanGV/Update/";
+
+        const loaiSanPham = document.getElementById("loaiSanPham").value;
+        const moTaLoaiSanPham = document.getElementById("moTaLoaiSanPham").value;
+        const yeuCauChatLuong = document.getElementById("yeuCauChatLuong").value;
+        const kinhPhi = document.getElementById("kinhPhi").value;
+
+        const data = {
+            id: ID,
+            loaiSanPham: loaiSanPham,
+            moTaLoaiSanPham: moTaLoaiSanPham,
+            yeuCauChatLuong: yeuCauChatLuong,
+            kinhPhi: kinhPhi
+        }
+
+        var options = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data),
+        };
+
+        fetch(link + ID, options)
+            .then(response => {
+                if (response.ok) {
+                    alert('Cập nhật dữ liệu thành công');
+                    window.location.href = '/ThanhToanGV';
+                } else {
+                    alert('Có lỗi xảy ra');
+                }
+            });
+    }
+</script>

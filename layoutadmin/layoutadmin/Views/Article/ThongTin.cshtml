@@ -1,0 +1,217 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>ThongTin</title>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="//use.fontawesome.com/releases/v6.4.0/css/all.css">
+    <!-- daterange picker -->
+    <link rel="stylesheet" href=" ~/Content/clients/plugins/daterangepicker/daterangepicker.css">
+    <!-- iCheck for checkboxes and radio inputs -->
+    <link rel="stylesheet" href=" ~/Content/clients/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+    <!-- Bootstrap Color Picker -->
+    <link rel="stylesheet" href=" ~/Content/clients/plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css">
+    <!-- Tempusdominus Bootstrap 4 -->
+    <link rel="stylesheet" href=" ~/Content/clients/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+    <!-- Select2 -->
+    <link rel="stylesheet" href=" ~/Content/clients/plugins/select2/css/select2.min.css">
+    <link rel="stylesheet" href=" ~/Content/clients/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+    <!-- Bootstrap4 Duallistbox -->
+    <link rel="stylesheet" href=" ~/Content/clients/plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css">
+    <!-- BS Stepper -->
+    <link rel="stylesheet" href=" ~/Content/clients/plugins/bs-stepper/css/bs-stepper.min.css">
+    <!-- dropzonejs -->
+    <link rel="stylesheet" href=" ~/Content/clients/plugins/dropzone/min/dropzone.min.css">
+    <link rel="stylesheet" href="~/Content/clients/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/Content/clients/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+
+    <!-- Theme style -->
+    <link rel="stylesheet" href=" ~/Content/clients/dist/css/adminlte.min.css">
+</head>
+<body>
+    <style>
+        .checkbox-group {
+            display: inline-block;
+        }
+
+        .form-check {
+            display: inline-block;
+            margin-right: 10px;
+        }
+    </style>
+    <div class="card card-primary">
+        <div class="card-header">
+            <h3 class="card-title">Thông tin cá nhân</h3>
+        </div>
+
+        <!-- /.card-header -->
+        <!-- form start -->
+        <form id="userinfor">
+        </form>
+    </div>
+    <script>
+        $(function () {
+            $('#datemask').inputmask('yyyy-mm-dd', { 'placeholder': 'yyyy-mm-dd' })
+
+        });
+        var linkapi = "https://localhost:44364/api/NguoiDung/Get-user?input=Toan";
+
+        function Start() {
+            Get_info(renderGet_info);
+            // Get_info(renderGet_hocvi);
+        }
+        Start();
+        function Get_info(callback) {
+            fetch(linkapi)
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(callback)
+        }
+        function renderGet_info(users) {
+            var form = document.querySelector('#userinfor');
+            var gioitinh = "";
+            var GS = "unchecked";
+            var PGS = "unchecked";
+            var TS = "unchecked";
+            var ThS = "unchecked";
+            var KS = "unchecked";
+            var CN = "unchecked";
+            var BS = "unchecked";
+
+            var htmls = users.map(function (user) {
+
+                if (user.gioiTinh == 1)
+                    gioitinh = "Nam";
+                else
+                    gioitinh = "Nữ";
+                if (user.chucDanh == "GS") {
+                    GS = "checked";
+                } else if (user.chucDanh == "PGS") {
+                    PGS = "checked";
+                } else if (user.chucDanh == "TS") {
+                    TS = "checked";
+                } else if (user.chucDanh == "ThS") {
+                    ThS = "checked";
+                } else if (user.chucDanh == "KS") {
+                    KS = "checked";
+                } else if (user.chucDanh == "CN") {
+                    CN = "checked";
+                } else if (user.chucDanh == "BS") {
+                    BS = "checked";
+                }
+                return `
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Họ và tên</label>
+                                        <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Họ và tên"  value="${user.hoTen}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">Giới tính</label>
+                                        <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Giới tính" value="${gioitinh}">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Ngày sinh</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                            </div>
+                                            <input id="datemask" type="text" class="form-control" data-inputmask-alias="datetime" data-inputmask-inputformat="yyyy-mm-dd" data-mask inputmode="numeric" placeholder="yyyy-mm-dd" value="${user.ngaySinh}">
+                                        </div>
+                                        <!-- /.input group -->
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">CCCD</label>
+                                        <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Căn cước công dân" value="${user.cccd}">
+                                    </div>
+                                    <div class="form-group" style="display:table-row">
+                                        <label for="exampleInputPassword1">Chức danh khoa học</label>
+                                        <br />
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" ${GS}>
+                                            <label class="form-check-label">GS</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" ${PGS}>
+                                            <label class="form-check-label">PGS</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" ${TS}>
+                                            <label class="form-check-label">TS</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" ${ThS}>
+                                            <label class="form-check-label">ThS</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" ${KS}>
+                                            <label class="form-check-label">KS</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" ${CN}>
+                                            <label class="form-check-label">CN</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" ${BS}>
+                                            <label class="form-check-label">BS</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">Chức vụ</label>
+                                        <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Chức vụ" value="${user.chucVu}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">Đơn vị công tác</label>
+                                        <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Đơn vị công tác" value="${user.donViCongTac}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">Phòng ban</label>
+                                        <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Phòng ban" value="${user.phongBan}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">Địa chỉ</label>
+                                        <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Địa chỉ" value="${user.diaChi}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">Tỉnh thành</label>
+                                        <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Tỉnh thành" value="${user.tinhThanh}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">Email chính</label>
+                                        <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email chính" value="${user.emailChinh}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">Email thay thế</label>
+                                        <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email thay thế" value="${user.emailThayThe}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">Số điện thoại cơ quan</label>
+                                        <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Số điện thoại cơ quan" value="${user.sdtCoQuan}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">Số điện thoại di động</label>
+                                        <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Số điện thoại di động" value="${user.sdtdd}">
+                                    </div>
+                                </div>
+                                <!-- /.card-body -->
+
+                                <div class="card-footer">
+                                    <button type="submit" class="btn btn-danger">Lưu</button>
+                                    <button type="submit" class="btn btn-primary">Cập nhập</button>
+                                </div>`;
+            });
+
+            form.innerHTML = htmls.join('');
+        }
+    </script>
+</body>
+</html>

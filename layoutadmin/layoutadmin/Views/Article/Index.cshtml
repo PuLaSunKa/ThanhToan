@@ -1,0 +1,824 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutUserPage.cshtml";
+}
+<div class="all">
+    <div class="card card-info">
+        <div class="card-header">
+            <h3 class="card-title">Chọn ngạch công tác</h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-4">
+                    <div class="custom-control custom-radio">
+                        <input class="custom-control-input" type="radio" id="GV" name="tick-rank" value="Giảng viên" checked onclick="clear_tacgia()">
+                        <label for="GV" class="custom-control-label">Giảng viên</label>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="custom-control custom-radio">
+                        <input class="custom-control-input" type="radio" id="NCV1" name="tick-rank" value="Nghiên cứu viên 1" onclick="clear_tacgia()">
+                        <label for="NCV1" class="custom-control-label">Nghiên cứu viên 1</label>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="custom-control custom-radio">
+                        <input class="custom-control-input" type="radio" id="NCV2" name="tick-rank" value="Nghiên cứu viên 2" onclick="clear_tacgia()">
+                        <label for="NCV2" class="custom-control-label">Nghiên cứu viên 2</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card card-info">
+        <div class="card-header">
+            <h3 class="card-title">Nhập tên sản phẩm khoa học</h3>
+        </div>
+        <div class="card-body">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Nhập tên sản phẩm khoa học" id="input-name" name="input-name">
+            </div>
+        </div>
+    </div>
+    <div class="card card-info">
+        <div class="card-header">
+            <h3 class="card-title">Chọn danh mục</h3>
+        </div>
+
+        <div class="card-body">
+            <div class="row">
+                <div class="col-6">
+                    <div class="custom-control custom-radio">
+                        <input class="custom-control-input" type="radio" id="traCuuDM" name="selectDM" value="Tra cứu danh mục theo issn hoặc eissn" checked>
+                        <label for="traCuuDM" class="custom-control-label">Tra cứu danh mục theo issn hoặc eissn</label>
+                    </div>
+                </div>
+                <div class="col-1">
+                </div>
+                <div class="col-5" id="danhmuckhac">
+                    <div id="div-dmk">
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input class="custom-control-input" type="radio" id="dmk" name="selectDM" value="Danh mục khác" onclick="danhMucKhac()">
+                        <label for="dmk" class="custom-control-label">Danh mục khác</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <br />
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <div class="row">
+                        <div class="col-9">
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" id="search-issn" name="search-issn-eissn" placeholder="Tra cứu danh mục theo issn hoặc eissn">
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="input-group mb-3">
+                                <input class="btn btn-default form-control" id="inpsearch" type="submit" value="Tìm kiếm">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="result-issn-eissn" id="checkbox-result-issn-eissn">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-1">
+                </div>
+                <div class="col-5">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Nhập tên danh mục khác">
+                    </div>
+                    <div class="custom-file">
+                        <input type="file" accept="image/*" class="custom-file-input" id="myFile" name="filename">
+                        <label class="custom-file-label" for="myFile">Upload Image</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card card-info">
+        <div class="card-header">
+            <h3 class="card-title">Loại tác giả - cơ quan công tác</h3>
+        </div>
+        <div class="card-body">
+            <div class="col-6">
+                <div class="form-group">
+                    <select name="tacgia" id="tacgia" class="form-control">
+                        <option value="0.8">Tác giả chính</option>
+                        <option value="0.2">Tác giả phụ</option>
+                        <option value="0.5">Tác giả liên hệ</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="sltg">Số lượng tác giả</label>
+                    <input class="form-control" type="number" id="sltg" min="1" />
+                </div>
+                <div class="form-group">
+                    <input class="form-control" type="text" placeholder="Nhập" id="inp-username-id-mail" oninput="inpsearch(render_user)" />
+                    <div id="themtg" style="display: flex">
+                        <div width: 50%">
+                            <dl id="dl-user">
+                            </dl>
+                        </div>
+                    </div>
+                    <input class="form-control" type="text" id="list-add-user" />
+                </div>
+                <div class="form-group">
+                    <select name="coquancongtac" id="coquancongtac" class="form-control">
+                        <option value="1"> Cơ quan công tác duy nhất Hutech (100%)</option>
+                        <option value="0.5">Hutech-Quốc tế (50%)</option>
+                        <option value="0">Quốc tế - Hutech (0%)</option>
+                        <option value="0">Cơ quan công tác trong nước - ngoài Hutech (0%)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card card-info">
+        <div class="card-header">
+            <h3 class="card-title">Chọn hình thức thanh toán</h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-6" id="thanhtoantt">
+                    <div class="custom-control custom-radio">
+                        <input class="custom-control-input" type="radio" id="thanhtoan" name="thanhtoan-quydoi" value="" onclick="loadradio()">
+                        <label for="thanhtoan" class="custom-control-label">THANH TOÁN TRỰC TIẾP</label>
+                    </div>
+                </div>
+                <div class="col-6" id="kekhaitietchuan">
+                    <div class="custom-control custom-radio">
+                        <input class="custom-control-input" type="radio" id="quydoi" name="thanhtoan-quydoi" value="" onclick="loadradio2()">
+                        <label for="quydoi" class="custom-control-label">KÊ KHAI TIẾT CHUẨN</label>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <br />
+            <div class="row" id="yeucauchatluong"></div>
+            <br />
+            <br />
+            <div id="loaisanpham"></div>
+            <br />
+            <br />
+            <div class="row" id="tongthanhtien"></div>
+        </div>
+    </div>
+    <div style="display: flex; justify-content: center;">
+        <input class="btn btn-info" id="inpsearchs" type="submit" value="Xác nhận gửi" onclick="handleSend()">
+    </div>
+</div>
+<script>
+    // api
+    const linkapilsp = "https://localhost:44364/api/ThanhToanGV/Get-LSP?lsp="
+
+    const linkapiID = "https://localhost:44364/api/ThanhToanGV/Get-ID?id=";
+    //------------------------------
+
+    //------------------------------
+
+    //element
+    document.querySelector('#tacgia').onchange = function () {
+        document.querySelector('#yeucauchatluong').innerHTML = ``;
+        document.querySelector('#loaisanpham').innerHTML = ``;
+        document.querySelector('#tongthanhtien').innerHTML = ``;
+        document.querySelector('#thanhtoan').checked = false;
+
+    }
+    document.querySelector('#coquancongtac').onchange = function () {
+
+        document.querySelector('#yeucauchatluong').innerHTML = ``;
+        document.querySelector('#loaisanpham').innerHTML = ``;
+        document.querySelector('#tongthanhtien').innerHTML = ``;
+        document.querySelector('#thanhtoan').checked = false;
+    }
+    function clear_tacgia() {
+        document.querySelector('#yeucauchatluong').innerHTML = ``;
+        document.querySelector('#loaisanpham').innerHTML = ``;
+        document.querySelector('#tongthanhtien').innerHTML = ``;
+        document.querySelector('#thanhtoan').checked = false;
+        render_fr_httt();
+    }
+    //------------------
+
+    function Start() {
+        Get_issn(renderGet_issn);
+        /*Get_loaisanpham(render_lsp);*/
+    }
+    Start();
+    function Get_issn(callback) {
+        var searchBtn = document.querySelector('#inpsearch');
+
+        searchBtn.onclick = function () {
+            var value = "https://localhost:44364/api/DanhMuc/Get-issn?issn=";
+
+            var inputSearch = document.querySelector('input[name="search-issn-eissn"]').value;
+            if (inpsearch == "") {
+                alert("empty");
+            } else {
+                fetch(value + inputSearch)
+                    .then(function (response) {
+                        if (response.status == 404) {
+                            fetch("https://localhost:44364/api/DanhMucScimago/Get-issn?issn=" + inputSearch)
+                                .then(function (res) {
+
+                                    return res.json();
+                                })
+                                .then(callback)
+                        }
+                        else {
+                            return response.json();
+
+                        }
+                    })
+                    .then(callback)
+
+            }
+
+        }
+    }
+    function renderGet_issn(issns) {
+        if (issns == null) {
+            document.querySelector('#checkbox-result-issn-eissn').innerHTML = ``;
+            document.querySelector('#danhmuckhac').innerHTML = `<input class="input-more" style="width: 25%; font-size: 120%" id="inp-name" placeholder="Name">
+                                                                    <input class="input-more" style=" font-size: 120%" id="inp-issn" placeholder="Issn">
+                                                                    <input class="input-more" style=" font-size: 120%" id="inp-iessn" placeholder="Eissn">
+                                                                    <input class="input-more" style="width: 25%; font-size: 120%" id="inp-catigory" placeholder="Category">`;
+        } else {
+            document.querySelector('#div-dmk').innerHTML = ``;
+            var checkbox = document.querySelector('#checkbox-result-issn-eissn');
+            checkbox.innerHTML = ``;
+            var htmls = issns.map(function (issn) {
+                if (issn.category_6 == null) {
+                    if (issn.category_5 == null) {
+                        if (issn.category_4 == null) {
+                            if (issn.category_3 == null) {
+                                if (issn.category_2 == null) {
+                                    return `<label id="lbr" style="color: black; font-size: 120%">Các danh mục liên quan</label><br />
+                                            <label  style="margin-left: 3%;font-size: 120%">Tên danh mục: <label id="lbname" style="color: red;">${issn.journal_name}</label></label>
+                                            <label style="font-size: 120%;  margin-left: 5%;">Issn: <label id="lbissn" style="color: red; ">${issn.issn}</label></label>
+                                            <label style="font-size: 120%;  margin-left: 5%;">Eissn: <label  id="lbeissn" style="color: red;">${issn.eissn}</label></label><br />
+                                            <input type="radio" class="radio-result" id="category-1" name="category" value="${issn.category_1}">
+                                            <label for="category-1">${issn.category_1}</label>
+                                            <style>
+                                                .radio-result{
+                                                    margin-left: 5%;
+                                                }
+                                            </style>`;
+                                }
+                                return `<label id="lbr" style="color: black; font-size: 120%">Các danh mục liên quan</label><br />
+                                        <label  style="margin-left: 3%;font-size: 120%">Tên danh mục: <label id="lbname" style="color: red;">${issn.journal_name}</label></label>
+                                        <label style="font-size: 120%;  margin-left: 5%;">Issn: <label id="lbissn" style="color: red; ">${issn.issn}</label></label>
+                                        <label style="font-size: 120%;  margin-left: 5%;">Eissn: <label  id="lbeissn" style="color: red;">${issn.eissn}</label></label><br />
+                                        <input type="radio" class="radio-result" id="category-1" name="category" value="${issn.category_1}">
+                                        <label for="category-1">${issn.category_1}</label><br>
+                                        <input type="radio" class="radio-result" id="category-2" name="category" value="${issn.category_2}">
+                                        <label for="category-2">${issn.category_2}</label>
+                                        <style>
+                                            .radio-result{
+                                                margin-left: 5%;
+                                            }
+                                        </style>`;
+                            }
+                            return `<label id="lbr" style="color: black; font-size: 120%">Các danh mục liên quan</label><br />
+                                    <label  style="margin-left: 3%;font-size: 120%">Tên danh mục: <label id="lbname" style="color: red;">${issn.journal_name}</label></label>
+                                    <label style="font-size: 120%;  margin-left: 5%;">Issn: <label id="lbissn" style="color: red; ">${issn.issn}</label></label>
+                                    <label style="font-size: 120%;  margin-left: 5%;">Eissn: <label  id="lbeissn" style="color: red;">${issn.eissn}</label></label><br />
+                                    <input type="radio" class="radio-result" id="category-1" name="category" value="${issn.category_1}">
+                                    <label for="category-1">${issn.category_1}</label><br />
+                                    <input type="radio" class="radio-result" id="category-2" name="category" value="${issn.category_2}">
+                                    <label for="category-2">${issn.category_2}</label><br />
+                                    <input type="radio" class="radio-result" id="category-3" name="category" value="${issn.category_3}">
+                                    <label for="category-3">${issn.category_3}</label><br />
+                                    <style>
+                                        .radio-result{
+                                            margin-left: 5%;
+                                        }
+                                    </style>`;
+                        }
+                        return `<label id="lbr" style="color: black; font-size: 120%">Các danh mục liên quan</label><br />
+                                <label  style="margin-left: 3%;font-size: 120%">Tên danh mục: <label id="lbname" style="color: red;">${issn.journal_name}</label></label>
+                                <label style="font-size: 120%;  margin-left: 5%;">Issn: <label id="lbissn" style="color: red; ">${issn.issn}</label></label>
+                                <label style="font-size: 120%;  margin-left: 5%;">Eissn: <label  id="lbeissn" style="color: red;">${issn.eissn}</label></label><br />
+                                <input type="radio" class="radio-result" id="category-1" name="category" value="${issn.category_1}">
+                                <label for="category-1">${issn.category_1}</label><br />
+                                <input type="radio" class="radio-result" id="category-2" name="category" value="${issn.category_2}">
+                                <label for="category-2">${issn.category_2}</label><br />
+                                <input type="radio" class="radio-result" id="category-3" name="category" value="${issn.category_3}">
+                                <label for="category-3">${issn.category_3}</label><br />
+                                <input type="radio" class="radio-result" id="category-4" name="category" value="${issn.category_4}">
+                                <label for="category-4">${issn.category_4}</label>
+                                <style>
+                                    .radio-result{
+                                        margin-left: 5%;
+                                    }
+                                </style>`;
+                    }
+                    return `<label id="lbr" style="color: black; font-size: 120%">Các danh mục liên quan</label><br />
+                            <label  style="margin-left: 3%;font-size: 120%">Tên danh mục: <label id="lbname" style="color: red;">${issn.journal_name}</label></label>
+                            <label style="font-size: 120%;  margin-left: 5%;">Issn: <label id="lbissn" style="color: red; ">${issn.issn}</label></label>
+                            <label style="font-size: 120%;  margin-left: 5%;">Eissn: <label  id="lbeissn" style="color: red;">${issn.eissn}</label></label><br />
+                            <input type="radio" class="radio-result" id="category-1" name="category" value="${issn.category_1}">
+                            <label for="category-1">${issn.category_1}</label><br />
+                            <input type="radio" class="radio-result" id="category-2" name="category" value="${issn.category_2}">
+                            <label for="category-2">${issn.category_2}</label><br />
+                            <input type="radio" class="radio-result" id="category-3" name="category" value="${issn.category_3}">
+                            <label for="category-3">${issn.category_3}</label><br />
+                            <input type="radio" class="radio-result" id="category-4" name="category" value="${issn.category_4}">
+                            <label for="category-4">${issn.category_4}</label>
+                            <input type="radio" class="radio-result" id="category-5" name="category" value="${issn.category_5}">
+                            <label for="category-5">${issn.category_5}</label>
+                            <style>
+                                .radio-result{
+                                    margin-left: 5%;
+                                }
+                            </style>`;
+                } else {
+                    return `<label id="lbr" style="color: black; font-size: 120%">Các danh mục liên quan</label><br />
+                            <label  style="margin-left: 3%;font-size: 120%">Tên danh mục: <label id="lbname" style="color: red;">${issn.journal_name}</label></label>
+                            <label style="font-size: 120%;  margin-left: 5%;">Issn: <label id="lbissn" style="color: red; ">${issn.issn}</label></label>
+                            <label style="font-size: 120%;  margin-left: 5%;">Eissn: <label  id="lbeissn" style="color: red;">${issn.eissn}</label></label><br />
+                            <input type="radio" class="radio-result" id="category-1" name="category" value="${issn.category_1}">
+                            <label for="category-1">${issn.category_1}</label><br />
+                            <input type="radio" class="radio-result" id="category-2" name="category" value="${issn.category_2}">
+                            <label for="category-2">${issn.category_2}</label><br />
+                            <input type="radio" class="radio-result" id="category-3" name="category" value="${issn.category_3}">
+                            <label for="category-3">${issn.category_3}</label><br />
+                            <input type="radio" class="radio-result" id="category-4" name="category" value="${issn.category_4}" ">
+                            <label for="category-4">${issn.category_4}</label><br />
+                            <input type="radio" class="radio-result" id="category-5" name="category" value="${issn.category_5}">
+                            <label for="category-5">${issn.category_5}</label><br />
+                            <input type="radio" class="radio-result" id="category-6" name="category" value="${issn.category_6}">
+                            <label for="category-5">${issn.category_6}</label><br />
+                            <style>
+                                .radio-result{
+                                    margin-left: 5%;
+                                }
+                            </style>`;
+                }
+            });
+        }
+        checkbox.innerHTML = htmls.join('');
+
+    }
+    //
+
+    var linkuser = "https://localhost:44364/api/NguoiDung/Get-user?input=";
+    function inpsearch(callback) {
+        var valueinp = document.querySelector('#inp-username-id-mail').value;
+        if (valueinp == "") {
+            var list = document.querySelector('#dl-user');
+            list.innerHTML = ``;
+        }
+        fetch(linkuser + valueinp)
+            .then(function (response) {
+                //console.log(response.status);
+                return response.json();
+            })
+            .then(callback)
+    }
+    function render_user(users) {
+        var list = document.querySelector('#dl-user');
+        list.innerHTML = ``;
+        var htmls = users.map(function (user) {
+            return `<dt value="${user.idUser}" style="border-style: groove;"><button onclick="btnadd('${user.idUser}')"> Thêm</button>${user.hoTen} - ${user.donViCongTac}</dt>
+                                                                                                                                    `
+        });
+
+        list.innerHTML = htmls.join('');
+    }
+    function btnadd(iduser) {
+
+        var tg = document.querySelector('#list-add-user');
+        if (tg.value == "") {
+            tg.value = tg.value + iduser;
+
+        } else {
+            tg.value = tg.value + "; " + iduser;
+
+        }
+    }
+    //----------------------------------
+    function Get_thanhtoanncv(a, callback) {
+        var valuerank = document.querySelector('input[name="tick-rank"]:checked').value;
+
+        if (valuerank != "Giảng viên") {
+            var linkapiquydoincv = "https://localhost:44364/api/QuyDoiNCV/Get-spkhcn?spkhcn=";
+            fetch(linkapiquydoincv + a)
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(callback)
+        } else {
+            fetch(linkapithanhtoanncv + a)
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(callback)
+        }
+    }
+
+    function render_fr_httt() {
+        var valuerank = document.querySelector('input[name="tick-rank"]:checked').value;
+        if (valuerank == "Giảng viên") {
+            document.getElementById("thanhtoan").disabled = false;
+            document.getElementById("quydoi").disabled = false;
+        }
+        else if (valuerank == "Nghiên cứu viên 1") {
+            document.getElementById("thanhtoan").disabled = true;
+            document.getElementById("quydoi").disabled = false;
+        }
+        else if (valuerank == "Nghiên cứu viên 2") {
+            document.getElementById("thanhtoan").disabled = false;
+            document.getElementById("quydoi").disabled = true;
+        }
+    }
+
+    function render_spkhcn(khcns) {
+        var checkbox = document.querySelector('#loaisanpham');
+        var valuerank = document.querySelector('input[name="tick-rank"]:checked').value;
+        document.querySelector('#loaisanpham').innerHTML = ``;
+        document.querySelector('#tongthanhtien').innerHTML = ``;
+        var tg = Number(document.querySelector('#tacgia').value);
+        var cq = Number(document.querySelector('#coquancongtac').value);
+        var valuerank = document.querySelector('input[name="tick-rank"]:checked').value;
+
+        if (valuerank != "Giảng viên") {
+            var htmls = khcns.map(function (khcn) {
+                return `<div class="custom-control custom-radio">
+                        <input class="custom-control-input" type="radio" id="${khcn.id}" name="yc" value="${khcn.moTaLoaiSanPham}" onclick="checkcheckncv(${khcn.id}, render_checkncv(${khcn.tietChuan}, ${khcn.diem}))">
+                        <label for="${khcn.id}" class="custom-control-label">${khcn.moTaSanPhamKHCN}</label>
+                    </div>`;
+            });
+        } else {
+            //var tongkinhphi = Number(kinhphi * tg * cq);
+            var htmls = khcns.map(function (khcn) {
+                return `<div class="custom-control custom-radio">
+                        <input class="custom-control-input" type="radio" id="${khcn.id}" name="yc" value="${khcn.moTaLoaiSanPham}" onclick="checkcheckncv(${khcn.id}, render_checkncv(${khcn.tietChuan}, ${khcn.diem}))">
+                        <label for="${khcn.id}" class="custom-control-label">${khcn.moTaSanPhamKHCN}</label>
+                    </div>`;
+            });
+
+        }
+
+        checkbox.innerHTML = htmls.join('');
+    }
+
+    function render_spkhcn(khcns) {
+        var checkbox = document.querySelector('#loaisanpham');
+        document.querySelector('#tongthanhtien').innerHTML = ``;
+        var valuerank = document.querySelector('input[name="tick-rank"]:checked').value;
+
+        var htmls = khcns.map(function (khcn) {
+            return `<div class="custom-control custom-radio">
+                        <input class="custom-control-input" type="radio" id="${khcn.id}" name="yc" value="${khcn.sanPhamKHCN}">
+                        <label for="${khcn.id}" class="custom-control-label">${khcn.moTaSanPhamKHCN}</label>
+                    </div>`;
+        });
+
+        checkbox.innerHTML = htmls.join('');
+    }
+    //----------------------------------
+
+    //----------------------------------
+
+    var linkapispkhcn = "https://localhost:44364/api/QuyDoiGV/Get-spkhcn?spkhcn=";
+    function Get_spkhcn(a, callback) {
+        var valuerank = document.querySelector('input[name="tick-rank"]:checked').value;
+        fetch(linkapispkhcn + a)
+            .then(function (response) {
+                return response.json();
+            })
+            .then(callback)
+
+    }
+    function render_spkhcn(khcns) {
+        var checkbox = document.querySelector('#loaisanpham');
+        var valuerank = document.querySelector('input[name="tick-rank"]:checked').value;
+        document.querySelector('#loaisanpham').innerHTML = ``;
+        document.querySelector('#tongthanhtien').innerHTML = ``;
+        var tg = Number(document.querySelector('#tacgia').value);
+        var cq = Number(document.querySelector('#coquancongtac').value);
+        var valuerank = document.querySelector('input[name="tick-rank"]:checked').value;
+
+        if (valuerank != "Giảng viên") {
+            var htmls = khcns.map(function (khcn) {
+                return `<div class="custom-control custom-radio">
+                        <input class="custom-control-input" type="radio" id="${khcn.id}" name="yc" value="${khcn.moTaLoaiSanPham}}" onclick="checkcheckncv(${khcn.id}, render_checkncv(${khcn.tietChuan}, ${khcn.diem}))">
+                        <label for="${khcn.id}" class="custom-control-label">${khcn.moTaLoaiSanPham}</label>
+                    </div>`;
+            });
+        } else {
+            //var tongkinhphi = Number(kinhphi * tg * cq);
+            var htmls = khcns.map(function (khcn) {
+                return `<div class="custom-control custom-radio">
+                        <input class="custom-control-input" type="radio" id="${khcn.id}" name="yc" value="${khcn.moTaLoaiSanPham}}" onclick="checkcheckncv(${khcn.id}, render_checkncv(${khcn.tietChuan}, ${khcn.diem}))">
+                        <label for="${khcn.id}" class="custom-control-label">${khcn.moTaLoaiSanPham}</label>
+                    </div>`;
+            });
+        }
+
+        checkbox.innerHTML = htmls.join('');
+    }
+    //----------------------------------
+
+    //-----------------------------------
+    function Get_loaisanpham(a, callback) {
+        fetch(linkapilsp + a)
+            .then(function (response) {
+                return response.json();
+            })
+            .then(callback)
+    }
+
+    function render_lsp(lsps) {
+        var checkbox = document.querySelector('#loaisanpham');
+        document.querySelector('#tongthanhtien').innerHTML = ``;
+
+        var htmls = lsps.map(function (lsp) {
+            return `<div class="custom-control custom-radio">
+                        <input class="custom-control-input" type="radio" id="${lsp.id}" name="yc" value="${lsp.yeuCauChatLuong}" onclick="checkcheck(${lsp.id},render_check(${lsp.kinhPhi}))">
+                        <label for="${lsp.id}" class="custom-control-label">${lsp.yeuCauChatLuong} </label>
+                    </div>`;
+        });
+        checkbox.innerHTML = htmls.join('');
+    }
+
+    document.getElementsByName('lsp').onchange = function () {
+        document.querySelector('#loaisanpham').innerHTML = ``;
+    }
+    //-----------------------------------
+
+    //-----------------------------------
+    //load radio khi chon hinh thuc thanh toan
+    function loadradio() {
+        document.querySelector('#yeucauchatluong').innerHTML = ``;
+        document.querySelector('#tongthanhtien').innerHTML = ``;
+        document.querySelector('#loaisanpham').innerHTML = ``;
+        var valuerank = document.querySelector('input[name="tick-rank"]:checked').value;
+        if (valuerank != "Giảng viên") {
+            document.querySelector('#yeucauchatluong').innerHTML =
+                `<div class="col-4">
+                <div class="custom-control custom-radio">
+                    <input class="custom-control-input" type="radio" id="baibaokhcn-ncv" name="lsp" value="BaiBao" onclick="Get_thanhtoanncv('BaiBao',render_spkhcn)">
+                    <label for="baibaokhcn-ncv" class="custom-control-label">BÀI BÁO</label>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="custom-control custom-radio">
+                    <input class="custom-control-input" type="radio" id="sachkhcn-ncv" name="lsp" value="Sach" onclick="Get_thanhtoanncv('Sach',render_spkhcn)">
+                    <label for="sachkhcn-ncv" class="custom-control-label">SÁCH/CHƯƠNG SÁCH</label>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="custom-control custom-radio">
+                    <input class="custom-control-input" type="radio" id="spkkhcn-ncv" name="lsp" value="SPK" onclick="Get_thanhtoanncv('SPK',render_spkhcn)">
+                    <label for="spkkhcn-ncv" class="custom-control-label">SẢN PHẨM KHÁC</label>
+                </div>
+            </div>`;
+        } else {
+            document.querySelector('#yeucauchatluong').innerHTML =
+                `<div class="col-4">
+                <div class="custom-control custom-radio">
+                    <input class="custom-control-input" type="radio" id="baibao" name="lsp" value="BaiBao" onclick="Get_loaisanpham('BaiBao',render_lsp)">
+                    <label for="baibao" class="custom-control-label">BÀI BÁO</label>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="custom-control custom-radio">
+                    <input class="custom-control-input" type="radio" id="spud" name="lsp" value="SPUD" onclick="Get_loaisanpham('SPUD',render_lsp)">
+                    <label for="spud" class="custom-control-label">SẢN PHẨM ỨNG DỤNG</label>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="custom-control custom-radio">
+                    <input class="custom-control-input" type="radio" id="shtt" name="lsp" value="SHTT" onclick="Get_loaisanpham('SHTT',render_lsp)">
+                    <label for="shtt" class="custom-control-label">SỞ HỮU TRÍ TUỆ</label>
+                </div>
+            </div>`;
+        }
+    }
+    function loadradio2() {
+        document.querySelector('#yeucauchatluong').innerHTML = ``;
+        document.querySelector('#loaisanpham').innerHTML = ``;
+        var valuerank = document.querySelector('input[name="tick-rank"]:checked').value;
+        document.querySelector('#tongthanhtien').innerHTML = ``;
+        if (valuerank != "Giảng viên") {
+            document.querySelector('#yeucauchatluong').innerHTML =
+                `<div class="col-4">
+                    <div class="custom-control custom-radio">
+                        <input class="custom-control-input" type="radio" id="baibaokhcn-ncv" name="lsp" value="BaiBao" onclick="Get_thanhtoanncv('BaiBao',render_spkhcn)">
+                        <label for="baibaokhcn-ncv" class="custom-control-label">BÀI BÁO</label>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="custom-control custom-radio">
+                        <input class="custom-control-input" type="radio" id="sachkhcn-ncv" name="lsp" value="Sach" onclick="Get_thanhtoanncv('Sach',render_spkhcn)">
+                        <label for="sachkhcn-ncv" class="custom-control-label">SÁCH/CHƯƠNG SÁCH</label>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="custom-control custom-radio">
+                        <input class="custom-control-input" type="radio" id="spkkhcn-ncv" name="lsp" value="SPK" onclick="Get_thanhtoanncv('SPK',render_spkhcn)">
+                        <label for="spkkhcn-ncv" class="custom-control-label">SẢN PHẨM KHÁC</label>
+                    </div>
+                </div>`;
+        } else {
+            document.querySelector('#yeucauchatluong').innerHTML =
+                `<div class="col-2">
+                    <div class="custom-control custom-radio">
+                        <input class="custom-control-input" type="radio" id="sgv" name="lsp" value="Sach" onclick="Get_spkhcn('Sach',render_spkhcn)">
+                        <label for="sgv" class="custom-control-label">SÁCH</label>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="custom-control custom-radio">
+                        <input class="custom-control-input" type="radio" id="dtgv" name="lsp" value="DeTai" onclick="Get_spkhcn('DeTai',render_spkhcn)">
+                        <label for="dtgv" class="custom-control-label">ĐỀ TÀI NCKH</label>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="custom-control custom-radio">
+                        <input class="custom-control-input" type="radio" id="tcgv" name="lsp" value="TapChi" onclick="Get_spkhcn('TapChi',render_spkhcn)">
+                        <label for="tcgv" class="custom-control-label">TẠP CHÍ</label>
+                    </div>
+                </div>
+
+                <div class="col-2">
+                    <div class="custom-control custom-radio">
+                        <input class="custom-control-input" type="radio" id="shttgv" name="lsp" value="SHTT" onclick="Get_spkhcn('HDNCKH',render_spkhcn)">
+                        <label for="shttgv" class="custom-control-label">HDSV NCKH</label>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="custom-control custom-radio">
+                        <input class="custom-control-input" type="radio" id="ntgv" name="lsp" value="Sach" onclick="Get_spkhcn('SHTT',render_spkhcn)">
+                        <label for="ntgv" class="custom-control-label">SHTT</label>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="custom-control custom-radio">
+                        <input class="custom-control-input" type="radio" id="spkkhcn-ncv" name="lsp" value="NgheThuat" onclick="Get_spkhcn('NgheThuat',render_spkhcn)">
+                        <label for="spkkhcn-ncv" class="custom-control-label">SP NGHỆ THUẬT</label>
+                    </div>
+                </div>`;
+
+        }
+    }
+
+    //----------------------------------
+
+    //Tinh tien
+
+    function checkcheck(a, callback) {
+
+        fetch(linkapiID + a)
+            .then(function (res) {
+                return res.json(); Ï
+
+            })
+            .then(callback);
+
+    }
+    function render_check(kinhphi, lsps) {
+        var checkbox = document.querySelector('#tongthanhtien');
+        var tg = Number(document.querySelector('#tacgia').value);
+        var cq = Number(document.querySelector('#coquancongtac').value);
+        var tongkinhphi = Number(kinhphi * cq);
+        checkbox.innerHTML = `<label style="color: red; margin-left: 60%; font-size: 120%"> Tổng kinh phí: <label id="total">${tongkinhphi}</label> </label>`;
+    }
+
+    linkapiID2 = "https://localhost:44364/api/QuyDoiGV/Get-id?id=";
+    function checkcheckncv(a, callback) {
+
+        fetch(linkapiID2 + a)
+            .then(function (res) {
+                return res.json(); Ï
+
+            })
+            .then(callback);
+
+    }
+
+    function render_checkncv(tietchuan, diem, lsps) {
+        var checkbox = document.querySelector('#tongthanhtien');
+        var optionstacgia = document.querySelector('#tacgia');
+        var texttacgia = optionstacgia.options[optionstacgia.selectedIndex].textContent;
+        var optionscongtac = document.querySelector('#coquancongtac');
+        var textcongtac = optionscongtac.options[optionscongtac.selectedIndex].value;
+        var sltg = Number(document.querySelector('input[id="sltg"]').value);
+        var thucnhantietchuan = 0;
+        var thucnhandiem = 0;
+        if (texttacgia == "Tác giả chính") {
+            if (sltg == 1) {
+                thucnhantietchuan = Number(tietchuan);
+                thucnhandiem = Number(diem);
+            } else if (sltg > 1) {
+                thucnhandiem = Number(diem) / 2;
+                thucnhantietchuan = (Number(tietchuan) * 0.8) / 2;
+            }
+        }
+        if (texttacgia == "Tác giả phụ") {
+            if (sltg > 2) {
+                thucnhantietchuan = (tietchuan * 0.2) / (sltg - 2);
+                thucnhandiem = diem / 2;
+            } else {
+                //
+            }
+        }
+        if (texttacgia == "Tác giả liên hệ") {
+            if (sltg == 1) {
+                thucnhantietchuan = tietchuan;
+                thucnhandiem = diem;
+            } else if (sltg > 1) {
+                thucnhantietchuan = (tietchuan * 0.8) / 2;
+                thucnhandiem = diem / 2;
+            }
+        }
+
+        var valuerank = document.querySelector('input[name="tick-rank"]:checked').value;
+        if (valuerank != "Giảng viên") {
+            checkbox.innerHTML = `<label style="color: red; margin-left: 60%; font-size: 120%"> Tổng tiết tiết chuẩn/điểm:<label id="total"> ${thucnhantietchuan}/${thucnhandiem}</label > </label >`;
+        } else {
+            checkbox.innerHTML = `<label style="color: red; margin-left: 60%; font-size: 120%"> Tổng tiết chuẩn/điểm:<label id="total"> ${thucnhantietchuan}/${thucnhandiem}</label > </label >`;
+        }
+    }
+    //----------------------------------
+
+    // gửi xét duyệt
+    function send(data) {
+        var link = "https://localhost:44364/api/DanhMucXetDuyet/Send";
+        var options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data),
+        };
+        fetch(link, options)
+            .then(response => {
+                if (response.ok) {
+                    alert('Đăng ký thành công');
+                    
+                    window.location.href = '/Article/SendMail';
+
+                } else {
+                    alert('Có lỗi');
+                }
+            });
+    }
+    function handleSend() {
+        try {
+            var valuerank = document.querySelector('input[name="tick-rank"]:checked').value;
+            var valuetenbaibao = document.querySelector('#input-name').value;
+            var valuecategory = document.querySelector('input[name="category"]:checked').value;
+            var optionstacgia = document.querySelector('#tacgia');
+            var valuelbname = document.querySelector('#lbname').textContent;
+            var valuelbissn = document.querySelector('#lbissn').textContent;
+            var valuelbeissn = document.querySelector('#lbeissn').textContent;
+            var texttacgia = optionstacgia.options[optionstacgia.selectedIndex].textContent;
+            var optionscongtac = document.querySelector('#coquancongtac');
+            var textcongtac = optionscongtac.options[optionscongtac.selectedIndex].textContent;
+            var sltg = document.querySelector('#sltg').value;
+            var valueyeucau = document.querySelector('input[name="yc"]:checked').value;
+            var total = document.querySelector('#total').textContent;
+            var tg = document.querySelector('#list-add-user').value;
+        } catch {
+
+        }
+        if (valuecategory == undefined || valueyeucau == undefined || valuelbeissn == undefined || valuelbissn == undefined || valuelbname == undefined ||
+            textcongtac == undefined || texttacgia == undefined || sltg == "" || total == "") {
+            alert("Error!");
+        } else {
+            var data = {
+                journal_name: valuelbname,
+                issn: valuelbissn,
+                eissn: valuelbeissn,
+                category: valuecategory,
+                citations: "",
+                if_2022: "",
+                jci: "",
+                percentageOAGold: "",
+                userId: "ADK0010278",
+                rank: valuerank,
+                image: "",
+                link: "",
+                tenBaiBao: valuetenbaibao,
+                type: valueyeucau,
+                groupUser: tg,
+                status: "Đang đợi duyệt",
+                quantity: sltg,
+                total: total,
+                dateSubmit: "2023-05-10"
+            }
+            send(data);
+        }
+    }
+    //----------------------------------
+    document.querySelector('input[name="tick-rank"]:checked').value;
+</script>

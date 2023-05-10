@@ -1,0 +1,15 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\layoutadmin",
+    "\\layoutadmin\\Views",
+    "\\layoutadmin\\Views\\Article",
+    "\\layoutadmin\\Views\\DanhMuc",
+    "\\layoutadmin\\Views\\DanhMucXetDuyet",
+    "\\layoutadmin\\Views\\GiangVien",
+    "\\layoutadmin\\Views\\Home",
+    "\\layoutadmin\\Views\\QuyDoiGV"
+  ],
+  "SelectedNode": "\\layoutadmin\\Views\\Home\\Index.cshtml",
+  "PreviewInSolutionExplorer": false
+}

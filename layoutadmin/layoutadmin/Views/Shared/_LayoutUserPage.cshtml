@@ -1,0 +1,100 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="~/Content/clients/plugins/fontawesome-free/css/all.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/Content/clients/dist/css/adminlte.min.css">
+
+    <style>
+        body {
+            font-family: "Lato", sans-serif;
+            background-color: whitesmoke;
+            margin: 0;
+        }
+
+        .header {
+            background-color: white;
+            padding: 5px;
+        }
+
+        .cs-row {
+            display: flex;
+            align-items: stretch;
+            column-gap: 20px;
+            margin: 0 20px;
+        }
+
+        .logo {
+            width: 15%;
+        }
+
+            .logo img {
+                width: 100%;
+            }
+
+        .menu {
+            width: 45%;
+            display: flex;
+            align-items: stretch;
+            flex-direction: row;
+            column-gap: 10px;
+        }
+
+        .cs-btn {
+            background-color: #008CBA;
+            border-radius: 2px;
+            color: white;
+            text-decoration: none;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .cs-user {
+            width: 40%;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .content-page {
+            background-color: white;
+            margin-top: 2%;
+            padding: 4% 6% 4% 6%;
+        }
+
+        .all {
+            background-color: whitesmoke;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="cs-row">
+            <div class="logo">
+                <img src="~/Content/Images/logo_hutech.png" alt="Logo Hutech">
+            </div>
+            <div class="menu">
+                <a href="#" class="cs-btn">Giảng viên</a>
+                <a href="#" class="cs-btn">Sinh viên</a>
+                <a href="#" class="cs-btn">Quản lý</a>
+            </div>
+            <div class="cs-user">
+                <p id="xinchao">Xin chào username</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-page">
+        @RenderBody()
+    </div>
+</body>
+</html>
